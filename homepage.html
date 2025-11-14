@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Personal website of Mélanie Barret – Cultural Travel Recommendation System Project.">
+    <title>My Personal Website – Research Project</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://github.com/melbrrt/demo/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+</head>
+<body>
+
+<div id="custom-cursor"></div>
+
+<div id="background-map"></div>
+
+<header class="main-header">
+    <h1>My Research Project Website</h1>
+    
+    <div class="menu-container">
+        <button class="menu-toggle" aria-expanded="false" aria-controls="tabs-menu" aria-label="Project Sections Menu">
+            <span class="icon-bar">Sections</span>
+        </button>
+        
+        <nav id="tabs-menu" class="dropdown-content">
+            <ul>
+                <li><a href="#tab-1" class="tab-link active" data-tab="1">Presentation</a></li>
+                <li><a href="#tab-2" class="tab-link" data-tab="2">Barplots</a></li>
+                <li><a href="#tab-3" class="tab-link" data-tab="3">Travel Planner</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="main-layout">
+    
+    <aside>
+        <section id="home" class="card">
+            <h2>Welcome to My Website</h2>
+            <p>This website presents my profile and my research project.</p>
+        </section>
+
+        <section id="about" class="card">
+            <h2>About Me</h2>
+            <p>Hello! I am Mélanie, a CPES3 DAC student at PSL. I am passionate about culture and digital technologies, and I love creating innovative, personalized tools to enhance cultural experiences for users.</p>
+        </section>
+
+        <section id="contact" class="card">
+            <h2>Contact</h2>
+            <p>Email: <a href="mailto:melanie.barret@psl.eu">melanie.barret@psl.eu</a></p>
+            <p>GitHub: <a href="https://github.com/melbrrt" target="_blank">github.com/melbrrt</a></p>
+        </section>
+    </aside>
+
+    <div class="content">
+
+        <div class="tab-panel active" id="tab-1" role="tabpanel">
+            <section id="project" class="card">
+                <h2 class="animate__animated animate__lightSpeedInLeft">Project: Personalized Cultural Travel Recommendation System</h2>
+                <h3>Objective</h3>
+                <p>Develop a system capable of suggesting relevant destinations and itineraries for a user based on their interests, preferences, and trip duration. The system also generates an optimized multi-day itinerary integrating local activities and events.</p>
+                <h3>Motivation</h3>
+                <p>Current travel platforms provide activity or hotel lists but offer few personalized recommendations based on user interests and do not provide integrated multi-day planning. This project aims to fill this gap by combining activity scoring, user preferences, and route optimization to deliver a truly personalized travel experience.</p>
+                <h3>Expected Outcome</h3>
+                <ul><li>User can input their interests</li><li>Specify the duration of their trip</li><li>Generate one or more personalized itineraries</li><li>Visualize activities and events on an interactive map</li></ul>
+                <h3>Main Tasks</h3>
+                <ol><li>Collect and prepare destination and event data (CSV Open Data, public APIs)</li><li>Develop activity scoring (interests, popularity, fuzzy search)</li><li>Implement an itinerary optimization algorithm</li><li>Create the user interface</li></ol>
+                <h3>MVP</h3>
+                <ul><li>Load data from a CSV or simulated dataset</li><li>Simple scoring based on interests</li><li>Generate itinerary respecting schedules and trip duration</li><li>Interactive map display with markers and route lines</li></ul>
+                <h3>Available Resources</h3>
+                <ul><li>Data: CSV, API</li><li>Python libraries: pandas, numpy, streamlit, folium, rapidfuzz</li></ul>
+            </section>
+            
+            <section id="devlog" class="card">
+                <h2>Devlog / Project Journal</h2>
+                <ul class="timeline">
+                    <li><strong>28/09/2025:</strong> Created a functional prototype of cultural itinerary recommendations using Streamlit, with a fictive dataset. It scores events based on preferences, popularity, and free-text search, generates multi-day itineraries respecting time and distances, and displays them on an interactive map. CSV import is not yet implemented, so data is currently in the script. Next steps: integrate real data, improve the interface, and optimize routes.</li>
+                    <li><strong>12/10/2025:</strong> Resolved the data loading issue — the system now correctly reads CSV files, which allowed integration of the CSV provided by the “Que faire à Paris” website.  During this integration, I noticed a major issue: the system sometimes recommended irrelevant events (e.g., “pop concert” for a “cinema” query). To address this, I increased the weight of the <code>tag_score</code>.  I also began the data acquisition phase for other cities by collecting Points of Interest (POIs) using Overpass Turbo (OpenStreetMap).</li>
+                    <li><strong>21/10/2025:</strong> Replaced the simple greedy algorithm with an intelligent trajectory engine. This approach is inspired by research from <em>BTREC: BERT-Based Trajectory Recommendation</em> and optimization concepts from Foursquare.  Previously, the algorithm used a greedy approach: at each step, it chose the closest activity among those with the best relevance score. However, this method did not guarantee the optimal sequence of activities for a full day.  The new engine solves this by integrating three crucial dimensions, directly inspired by advanced route optimization techniques used in academia (BTREC) and industry (Foursquare):  <ol><li><strong>Relevance (User Score):</strong> The foundation (50% weight). Ensures the recommended activity strongly matches the user’s tags and search intent.</li><li><strong>Behavioral Transition Probability:</strong> The intelligence layer. Using a Transition Matrix built from check-in data (TIST2015), the engine evaluates the likelihood that a user transitions from one category (e.g., museum) to another (e.g., café) rather than an unrelated one (e.g., gym). This ensures logical, natural activity sequences.</li><li><strong>Travel Minimization:</strong> Instead of simply choosing the nearest point, the system calculates the total travel cost (distance and estimated time) and integrates it into the decision score. This allows the engine to favor a slightly less relevant but much more convenient activity — or justify a longer trip for a highly relevant one.</li></ol></li>
+                </ul>
+            </section>
+            
+            <section id="differentiators" class="card">
+                <h2>Differentiators</h2>
+                <div class="diff-grid">
+                    <div class="diff-card">
+                        <img src="geo.svg" alt="Optimized itinerary" class="icon-img">
+                        <h4>Optimized Itinerary</h4>
+                        <p>Multi-day planning based on schedule and location</p>
+                    </div>
+                    <div class="diff-card">
+                        <img src="bar-chart.svg" alt="Personalized scoring" class="icon-img">
+                        <h4>Personalized Scoring</h4>
+                        <p>Based on interests, popularity, and fuzzy search</p>
+                    </div>
+                    <div class="diff-card">
+                        <img src="globe-americas.svg" alt="Interactive visualization" class="icon-img">
+                        <h4>Interactive Visualization</h4>
+                        <p>Interactive map showing activities and events</p>
+                    </div>
+                    <div class="diff-card">
+                        <img src="person.svg" alt="User-adapted" class="icon-img">
+                        <h4>User-Adapted</h4>
+                        <p>Recommendations based on user profile and trip duration</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="tab-panel" id="tab-2" role="tabpanel" style="display:none;">
+            <section class="card">
+                <h2 class="animate__animated animate__lightSpeedInLeft">Event Visualization</h2>
+                <h3>1. Number of events per tag</h3>
+                <svg id="barplot-tags"></svg>
+                <h3>2. Average popularity per tag</h3>
+                <svg id="barplot-popularity"></svg>
+                <h3>3. Number of events per venue</h3>
+                <svg id="barplot-venue"></svg>
+            </section>
+        </div>
+
+        <div class="tab-panel" id="tab-3" role="tabpanel" style="display:none;">
+            <div class="coming-soon-message">
+                <h2>Travel Planner</h2>
+                <p>This feature is currently under development 🛠️</p>
+                <p>It will be <strong>available soon</strong>! Check back later to explore the interactive travel planner interface.</p>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <p>Website Footer © 2025 — Mélanie</p>
+</footer>
+
+<script type="module">
+    // --- CURSEUR AVION ---
+    document.addEventListener('mousemove', (e) => {
+        const cursor = document.getElementById('custom-cursor');
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+
+    // --- ONGLETS/PANNEAUX ---
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const panels = document.querySelectorAll('.tab-panel');
+    let barplotsLoaded = false;
+
+    function applyAnimation(selector) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.classList.remove('animate__lightSpeedInLeft');
+            void element.offsetWidth; 
+            element.classList.add('animate__lightSpeedInLeft');
+        }
+    }
+
+    // D3.js 
+    async function drawBarplots() {
+        const width = 800;
+        const height = 400;
+        const margin = { top: 30, right: 30, bottom: 100, left: 60 };
+        
+        const data = await d3.csv("events.csv", d3.autoType);
+        
+        // COULEURS 
+        const colorPrimary = '#5c3d2e'; 
+        const colorSecondary = '#c8a08b'; 
+        const colorAccent = '#ff8c66'; 
+
+        // --- 1. Nombre d'événements par tag  ---
+        const tagCounts = d3.rollups(data, v => v.length, d => d.tags)
+            .map(([tag, count]) => ({ tag, count })).sort((a,b) => b.count - a.count).slice(0, 10);
+        
+        const xTag = d3.scaleBand().domain(tagCounts.map(d => d.tag)).range([margin.left, width - margin.right]).padding(0.1);
+        const yTag = d3.scaleLinear().domain([0, d3.max(tagCounts, d => d.count)]).range([height - margin.bottom, margin.top]);
+        
+        const svgTags = d3.select("#barplot-tags");
+        svgTags.selectAll("*").remove();
+        svgTags.attr("width", width).attr("height", height);
+
+        svgTags.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(xTag)).selectAll("text").attr("transform", "rotate(-40)").style("text-anchor", "end");
+        svgTags.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(yTag));
+        svgTags.selectAll(".bar").data(tagCounts).join("rect").attr("class", "bar").attr("x", d => xTag(d.tag)).attr("y", d => yTag(d.count)).attr("width", xTag.bandwidth()).attr("height", d => height - margin.bottom - yTag(d.count)).attr("fill", colorSecondary);
+
+
+        // --- 2. Popularité moyenne par tag  ---
+        const tagPopularity = d3.rollups(data, v => d3.mean(v, d => d.popularity), d => d.tags)
+            .map(([tag, avg]) => ({ tag, avg })).sort((a,b) => b.avg - a.avg).slice(0,10);
+
+        const xPop = d3.scaleBand().domain(tagPopularity.map(d => d.tag)).range([margin.left, width - margin.right]).padding(0.1);
+        const yPop = d3.scaleLinear().domain([0, d3.max(tagPopularity, d => d.avg)]).range([height - margin.bottom, margin.top]);
+
+        const svgPop = d3.select("#barplot-popularity");
+        svgPop.selectAll("*").remove();
+        svgPop.attr("width", width).attr("height", height);
+
+        svgPop.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(xPop)).selectAll("text").attr("transform", "rotate(-40)").style("text-anchor", "end");
+        svgPop.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(yPop));
+        svgPop.selectAll(".bar").data(tagPopularity).join("rect").attr("class", "bar").attr("x", d => xPop(d.tag)).attr("y", d => yPop(d.avg)).attr("width", xPop.bandwidth()).attr("height", d => height - margin.bottom - yPop(d.avg)).attr("fill", colorAccent);
+        
+
+        // --- 3. Nombre d'événements par venue  ---
+        const venueCounts = d3.rollups(data, v => v.length, d => d.venue)
+            .map(([venue, count]) => ({ venue, count })).sort((a,b) => b.count - a.count).slice(0,10);
+
+        const xVenue = d3.scaleBand().domain(venueCounts.map(d => d.venue)).range([margin.left, width - margin.right]).padding(0.1);
+        const yVenue = d3.scaleLinear().domain([0, d3.max(venueCounts, d => d.count)]).range([height - margin.bottom, margin.top]);
+
+        const svgVenue = d3.select("#barplot-venue");
+        svgVenue.selectAll("*").remove();
+        svgVenue.attr("width", width).attr("height", height);
+
+        svgVenue.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(xVenue)).selectAll("text").attr("transform", "rotate(-40)").style("text-anchor", "end");
+        svgVenue.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(yVenue));
+        svgVenue.selectAll(".bar").data(venueCounts).join("rect").attr("class", "bar").attr("x", d => xVenue(d.venue)).attr("y", d => yVenue(d.count)).attr("width", xVenue.bandwidth()).attr("height", d => height - margin.bottom - yVenue(d.count)).attr("fill", colorPrimary);
+
+        barplotsLoaded = true;
+        applyAnimation('#tab-2 h2');
+    }
+
+    tabLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            const tabId = link.dataset.tab;
+            
+            panels.forEach(panel => {
+                panel.style.display = 'none';
+            });
+            tabLinks.forEach(lnk => {
+                lnk.classList.remove('active');
+            });
+
+            const activePanel = document.getElementById('tab-' + tabId);
+            activePanel.style.display = 'block';
+            link.classList.add('active');
+
+            if(tabId === "1"){
+                applyAnimation('#tab-1 #project h2');
+            }
+            
+            if(tabId === "2"){
+                if (!barplotsLoaded) {
+                    drawBarplots();
+                } else {
+                    applyAnimation('#tab-2 h2');
+                }
+            }
+        });
+    });
+    
+    document.getElementById('tab-1').style.display = 'block';
+    applyAnimation('#tab-1 #project h2');
+    
+</script>
+</body>
+</html>
+
